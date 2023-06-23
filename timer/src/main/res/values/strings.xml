@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Timer</string>
+    <string name="timer_executed">Timer executed!</string>
+    <string name="timer_initial_value">00:00:00</string>
+    <string name="welcome_title">Welcome to timer app!</string>
+    <string name="button_start_label">Start</string>
+    <string name="button_stop_label">Stop</string>
+    <string name="timer_interrupted">Timer interrupted!</string>
+</resources>
