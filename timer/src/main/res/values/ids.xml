@@ -2,4 +2,5 @@
 <resources>
     <item name="titleTextView" type="id" />
     <item name="timerTextView" type="id" />
+    <item name="notification_text_view" type="id" />
 </resources>

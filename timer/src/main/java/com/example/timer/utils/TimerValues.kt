@@ -1,4 +1,4 @@
-package com.example.timer.ui.utils
+package com.example.timer.utils
 
 enum class TimerValues(private val maxValue: Int) {
     HOUR(99),

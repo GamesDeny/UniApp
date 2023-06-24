@@ -1,4 +1,4 @@
-package com.example.timer.ui.utils
+package com.example.timer.utils
 
 import android.media.MediaPlayer
 import com.example.timer.MainActivity
@@ -8,10 +8,6 @@ class TimerMediaPlayer private constructor() : MediaPlayer() {
     companion object {
         @Volatile
         private var instance: MediaPlayer? = null
-
-        fun getInstance() = instance ?: synchronized(this) {
-            instance ?: TimerMediaPlayer().also { instance = it }
-        }
 
         fun initializeMediaPlayer(mainActivity: MainActivity) {
             instance = create(mainActivity, R.raw.timer_end_sound)

@@ -1,4 +1,4 @@
-package com.example.timer.ui.utils
+package com.example.timer.utils
 
 import android.annotation.SuppressLint
 import android.text.Editable

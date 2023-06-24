@@ -1,5 +1,8 @@
 package com.example.timer
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -7,38 +10,70 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.timer.ui.utils.TimerMediaPlayer
-import com.example.timer.ui.utils.TimerTextWatcher
-import com.example.timer.ui.utils.TimerValues
+import com.example.timer.utils.NotificationHandler
+import com.example.timer.utils.TimerMediaPlayer
+import com.example.timer.utils.TimerTextWatcher
+import com.example.timer.utils.TimerValues
+
 
 class MainActivity : AppCompatActivity() {
+    /* Local section */
+    private val tag = "MainActivity"
     private lateinit var textViewTimer: TextView
+    private lateinit var notificationHandler: NotificationHandler
 
+    /* Input section */
     private lateinit var editTextHours: EditText
     private lateinit var editTextMinutes: EditText
     private lateinit var editTextSeconds: EditText
 
+    /* Button section */
     private lateinit var buttonStartTimer: Button
     private lateinit var buttonStopTimer: Button
     private lateinit var buttonPauseTimer: Button
 
+    /* Timer section */
     private var remainingTime: Long = 0
     private lateinit var countDownTimer: CountDownTimer
     private var isTimerRunning = false
-
-    private val tag = "MainActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        notificationHandler = NotificationHandler(this)
+
         TimerMediaPlayer.initializeMediaPlayer(this)
         textViewTimer = findViewById(R.id.text_view_timer)
 
+        registerNotificationChannel()
         initializeText()
         initializeStartButton()
         initializePauseButton()
         initializeStopButton()
+    }
+
+    private fun registerNotificationChannel() {
+        val name = getString(R.string.channel_name)
+        val description = getString(R.string.channel_description)
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+
+        val channel = NotificationChannel(getString(R.string.channel_name), name, importance)
+        channel.description = description
+
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isTimerRunning) {
+            countDownTimer.cancel()
+        }
+        TimerMediaPlayer.stopMediaPlayer()
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.deleteNotificationChannel(getString(R.string.channel_name))
     }
 
     private fun initializeStopButton() {
@@ -53,6 +88,7 @@ class MainActivity : AppCompatActivity() {
             buttonStartTimer.isEnabled = true
             textViewTimer.text = getString(R.string.timer_initial_value)
             buttonStopTimer.text = getString(R.string.button_stop_label)
+            getNotification()
         }
     }
 
@@ -108,6 +144,7 @@ class MainActivity : AppCompatActivity() {
                 TimerMediaPlayer.playTimerSound()
                 buttonStartTimer.isEnabled = true
                 isTimerRunning = false
+                getNotification()
                 // Play sound and show notification here
             }
         }
@@ -150,11 +187,8 @@ class MainActivity : AppCompatActivity() {
         return editText.text.toString().toIntOrNull() ?: 0
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (isTimerRunning) {
-            countDownTimer.cancel()
-        }
+    private fun getNotification() {
+        return notificationHandler.createNotification(getString(R.string.default_notification_message))
     }
 
 }
