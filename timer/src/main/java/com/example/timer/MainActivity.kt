@@ -8,6 +8,8 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.timer.ui.utils.TimerMediaPlayer
+import com.example.timer.ui.utils.TimerTextWatcher
+import com.example.timer.ui.utils.TimerValues
 
 class MainActivity : AppCompatActivity() {
     private lateinit var textViewTimer: TextView
@@ -17,7 +19,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var buttonStartTimer: Button
     private lateinit var buttonStopTimer: Button
     private lateinit var countDownTimer: CountDownTimer
-    private val TAG = "MainActivity - "
+    private val tag = "MainActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,19 +27,23 @@ class MainActivity : AppCompatActivity() {
 
         TimerMediaPlayer.initializeMediaPlayer(this)
         textViewTimer = findViewById(R.id.text_view_timer)
+
         editTextHours = findViewById(R.id.edit_text_hours)
         editTextMinutes = findViewById(R.id.edit_text_minutes)
         editTextSeconds = findViewById(R.id.edit_text_seconds)
+        editTextHours.addTextChangedListener(TimerTextWatcher(editTextHours, TimerValues.HOUR))
+        editTextMinutes.addTextChangedListener(TimerTextWatcher(editTextMinutes, TimerValues.MINUTE))
+        editTextSeconds.addTextChangedListener(TimerTextWatcher(editTextSeconds, TimerValues.SECOND))
+
         buttonStartTimer = findViewById(R.id.button_start_timer)
         buttonStopTimer = findViewById(R.id.button_stop_timer)
 
         buttonStartTimer.setOnClickListener {
-            Log.d(TAG, "Setting listener for start button")
-            val hours = getTimeOrZero(editTextHours)
-            val minutes = getTimeOrZero(editTextMinutes)
-            val seconds = getTimeOrZero(editTextSeconds)
+            Log.d(tag, "Setting listener for start button")
+            val triple = getTimerValue()
 
-            val totalMilliseconds = ((hours * 60 * 60) + (minutes * 60) + seconds) * 1000L
+            val totalMilliseconds =
+                ((triple.first * 60 * 60) + (triple.second * 60) + triple.third) * 1000L
 
             countDownTimer = object : CountDownTimer(totalMilliseconds, 1000) {
                 override fun onTick(millisUntilFinished: Long) {
@@ -66,11 +72,25 @@ class MainActivity : AppCompatActivity() {
         }
 
         buttonStopTimer.setOnClickListener {
-            Log.d(TAG, "Setting listener for stop button")
+            Log.d(tag, "Setting listener for stop button")
             countDownTimer.cancel()
             textViewTimer.text = getString(R.string.timer_initial_value)
         }
 
+    }
+
+    private fun getTimerValue(): Triple<Int, Int, Int> {
+        val hours = getTimeOrZero(editTextHours)
+        var minutes = getTimeOrZero(editTextMinutes)
+        var seconds = getTimeOrZero(editTextSeconds)
+
+        if (minutes > 59) {
+            minutes = 59
+        }
+        if (seconds > 59) {
+            seconds = 59
+        }
+        return Triple(hours, minutes, seconds)
     }
 
     private fun getTimeOrZero(editText: EditText): Int {

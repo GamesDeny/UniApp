@@ -1,59 +1,55 @@
 package com.example.timer.ui.utils
 
+import android.annotation.SuppressLint
 import android.text.Editable
 import android.text.TextWatcher
-import android.widget.Button
+import android.util.Log
 import android.widget.EditText
-import java.util.regex.Pattern
 
 open class TimerTextWatcher(
-    private val editTextTimer: EditText, private val buttonStart: Button
+    private val editText: EditText, private val timerValue: TimerValues
 ) : TextWatcher {
-    private val timeRegex = "^(\\d){2}(:([0-5]\\d)){2}$"
-    private val timePattern = Pattern.compile(timeRegex)
+    private val tag = "TimerTextWatcher"
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        // Not necessary
     }
 
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-        validateTimerInput(s.toString())
+    override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
     }
 
-    override fun afterTextChanged(s: Editable?) {
-        if (!s.isNullOrBlank()) {
-            val input = s.toString()
-            val formattedInput = formatTimerInput(input)
+    @SuppressLint("SetTextI18n")
+    override fun afterTextChanged(editable: Editable?) {
+        editText.removeTextChangedListener(this)
 
-            editTextTimer.removeTextChangedListener(this)
-            editTextTimer.setText(formattedInput)
-            editTextTimer.setSelection(formattedInput.length)
-            editTextTimer.addTextChangedListener(this)
-        }
-        validateTimerInput(s.toString())
-    }
+        val text = editable.toString()
+        Log.d(tag, "Found text: $text")
+        if (text.isNotBlank()) {
+            val value = text.toInt()
 
-    private fun formatTimerInput(input: String): String {
-        val digitsOnly = input.replace(Regex("\\D"), "")
-        val formattedInput = StringBuilder()
+            Log.d(tag, "Found $timerValue: $value")
+            when (timerValue) {
+                TimerValues.HOUR -> {
+                    if (value < 10) {
+                        editText.setText(value.toString())
+                        editText.setSelection(text.length)
+                    }
+                }
 
-        for (index in digitsOnly.indices) {
-            if (index > 0 && index % 2 == 0 && index < digitsOnly.length) {
-                formattedInput.append(":")
+                TimerValues.MINUTE, TimerValues.SECOND -> {
+                    if (value < 10) {
+                        editText.setText(value.toString())
+                        editText.setSelection(text.length)
+                    } else if (value > 59) {
+                        editText.setText("59")
+                        editText.setSelection(text.length)
+                    }
+                }
             }
-            formattedInput.append(digitsOnly[index])
         }
 
-        return formattedInput.toString()
+        editText.addTextChangedListener(this)
     }
 
-    private fun validateTimerInput(input: String) {
-        val result = timePattern.matcher(input).matches()
-
-        // 3 couple of numbers and 2 double dots
-        if (input.length > 8) {
-        }
-
-        buttonStart.isEnabled = result
-    }
 
 }
