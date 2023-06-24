@@ -9,8 +9,8 @@ import java.util.regex.Pattern
 open class TimerTextWatcher(
     private val editTextTimer: EditText, private val buttonStart: Button
 ) : TextWatcher {
-    private val timerRegex = "^(?:[01]\\d|2[0-3]):(?:[0-5]\\d):(?:[0-5]\\d)$"
-    private val timePattern = Pattern.compile(timerRegex)
+    private val timeRegex = "^(\\d){2}(:([0-5]\\d)){2}$"
+    private val timePattern = Pattern.compile(timeRegex)
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
     }
@@ -23,6 +23,7 @@ open class TimerTextWatcher(
         if (!s.isNullOrBlank()) {
             val input = s.toString()
             val formattedInput = formatTimerInput(input)
+
             editTextTimer.removeTextChangedListener(this)
             editTextTimer.setText(formattedInput)
             editTextTimer.setSelection(formattedInput.length)
@@ -35,18 +36,24 @@ open class TimerTextWatcher(
         val digitsOnly = input.replace(Regex("\\D"), "")
         val formattedInput = StringBuilder()
 
-        for (i in digitsOnly.indices) {
-            if (i > 0 && i % 2 == 0 && i < digitsOnly.length) {
+        for (index in digitsOnly.indices) {
+            if (index > 0 && index % 2 == 0 && index < digitsOnly.length) {
                 formattedInput.append(":")
             }
-            formattedInput.append(digitsOnly[i])
+            formattedInput.append(digitsOnly[index])
         }
 
         return formattedInput.toString()
     }
 
     private fun validateTimerInput(input: String) {
-        buttonStart.isEnabled = timePattern.matcher(input).matches()
+        val result = timePattern.matcher(input).matches()
+
+        // 3 couple of numbers and 2 double dots
+        if (input.length > 8) {
+        }
+
+        buttonStart.isEnabled = result
     }
 
 }
