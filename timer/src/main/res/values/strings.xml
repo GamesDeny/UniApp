@@ -12,4 +12,6 @@
     <string name="timer_seconds">SS</string>
     <string name="time_minutes">MM</string>
     <string name="time_hour">HH</string>
+    <string name="button_pause_label">Pause</string>
+    <string name="button_reset_label">Reset</string>
 </resources>

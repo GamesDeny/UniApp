@@ -78,6 +78,15 @@
             tools:ignore="ButtonStyle" />
 
         <Button
+            android:id="@+id/button_pause_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="@string/button_pause_label"
+            tools:ignore="ButtonStyle" />
+
+        <Button
             android:id="@+id/button_stop_timer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
