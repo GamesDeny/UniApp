@@ -16,6 +16,7 @@ open class TimerTextWatcher(
     }
 
     override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
+        // Not necessary
     }
 
     @SuppressLint("SetTextI18n")

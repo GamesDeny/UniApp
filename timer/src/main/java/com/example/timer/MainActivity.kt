@@ -145,7 +145,6 @@ class MainActivity : AppCompatActivity() {
                 buttonStartTimer.isEnabled = true
                 isTimerRunning = false
                 getNotification()
-                // Play sound and show notification here
             }
         }
 
