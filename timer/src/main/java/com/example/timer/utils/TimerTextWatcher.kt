@@ -7,7 +7,8 @@ import android.util.Log
 import android.widget.EditText
 
 open class TimerTextWatcher(
-    private val editText: EditText, private val timerValue: TimerValues
+    private val editText: EditText,
+    private val timerValue: TimerValues
 ) : TextWatcher {
     private val tag = "TimerTextWatcher"
 
@@ -34,6 +35,9 @@ open class TimerTextWatcher(
                     if (value < 10) {
                         editText.setText(value.toString())
                         editText.setSelection(text.length)
+                    } else if (value > 99) {
+                        editText.setText("99")
+                        editText.setSelection(text.length)
                     }
                 }
 
@@ -51,6 +55,5 @@ open class TimerTextWatcher(
 
         editText.addTextChangedListener(this)
     }
-
 
 }

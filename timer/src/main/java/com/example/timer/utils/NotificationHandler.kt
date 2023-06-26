@@ -11,7 +11,6 @@ import androidx.core.app.NotificationCompat
 import com.example.timer.MainActivity
 import com.example.timer.R
 
-
 class NotificationHandler(private val context: Context) {
     private lateinit var notificationManager: NotificationManager
     private val tag = "NotificationHandler"
@@ -45,7 +44,7 @@ class NotificationHandler(private val context: Context) {
         val intent = Intent(context, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
 
-        return PendingIntent.getActivity (
+        return PendingIntent.getActivity(
             context,
             0,
             intent,

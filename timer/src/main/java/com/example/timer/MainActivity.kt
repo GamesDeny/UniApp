@@ -13,8 +13,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.timer.utils.NotificationHandler
 import com.example.timer.utils.TimerMediaPlayer
 import com.example.timer.utils.TimerTextWatcher
+import com.example.timer.utils.TimerUtils
 import com.example.timer.utils.TimerValues
-
 
 class MainActivity : AppCompatActivity() {
     /* Local section */
@@ -113,7 +113,23 @@ class MainActivity : AppCompatActivity() {
                 buttonStopTimer.text = getString(R.string.button_reset_label)
 
                 Log.d(tag, "Setting listener for start button")
-                countDownTimer = getCountDownTimer(getTotalMilliseconds())
+                countDownTimer =
+                    getCountDownTimer(
+                        totalMilliseconds = TimerUtils.getTotalMilliSeconds(
+                            TimerUtils.getMilliSecondsForTimeUnit(
+                                editTextHours.text.toString(),
+                                TimerValues.HOUR
+                            ),
+                            TimerUtils.getMilliSecondsForTimeUnit(
+                                editTextMinutes.text.toString(),
+                                TimerValues.MINUTE
+                            ),
+                            TimerUtils.getMilliSecondsForTimeUnit(
+                                editTextSeconds.text.toString(),
+                                TimerValues.SECOND
+                            )
+                        )
+                    )
 
                 isTimerRunning = true
                 countDownTimer.start()
@@ -165,25 +181,6 @@ class MainActivity : AppCompatActivity() {
                 TimerValues.SECOND
             )
         )
-    }
-
-    private fun getTotalMilliseconds(): Long {
-        val hours = getTimeOrZero(editTextHours)
-        var minutes = getTimeOrZero(editTextMinutes)
-        var seconds = getTimeOrZero(editTextSeconds)
-
-        if (minutes > 59) {
-            minutes = 59
-        }
-        if (seconds > 59) {
-            seconds = 59
-        }
-
-        return ((hours * 60 * 60) + (minutes * 60) + seconds) * 1000L
-    }
-
-    private fun getTimeOrZero(editText: EditText): Int {
-        return editText.text.toString().toIntOrNull() ?: 0
     }
 
     private fun getNotification() {
